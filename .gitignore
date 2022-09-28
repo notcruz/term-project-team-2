@@ -1,0 +1,6 @@
+
+
+# ignore Terraform blobs (*terraform* filters all)
+/.terraform/
+.terraform.*
+terraform.*
