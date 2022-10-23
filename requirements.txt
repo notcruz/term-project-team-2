@@ -1,0 +1,4 @@
+# Requirements.txt for twitter_controller.py
+# Run `pip3 install -r requirements.txt` 
+
+tweepy
