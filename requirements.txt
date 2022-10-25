@@ -2,3 +2,4 @@
 # Run `pip3 install -r requirements.txt` 
 
 tweepy
+python-dotenv
