@@ -32,17 +32,21 @@ def parse_tweets(json):
     return [
         {"created_at": tweets[key]["created_at"], "id": tweets[key]["id"], "text": tweets[key]["text"], "lang": tweets[key]["lang"], "geo": tweets[key]["geo"]} for key in tweets.keys()
     ]
-
+    
+def get_next_token(data, cursor):
+    if not cursor:
+        return data["timeline"]["instructions"][0]["addEntries"]["entries"][-1]["content"]["operation"]["cursor"]["value"]
+    return data["timeline"]["instructions"][-1]["replaceEntry"]["entry"]["content"]["operation"]["cursor"]["value"]
 
 def get_tweets(session, count, q):
     # shallow copy for the default params
     headers = DEFAULT_QUERY_PARAMS.copy()
     result = []
     iteration_count = 0
+    cursor = None
     while count > 0:
         c = MAX_TWEET_COUNT
-        headers.update({"q": q})
-        headers.update({"count": c})
+        headers.update({"q": q, "count": c, "cursor": cursor})
         response = session.get(
             f"{BASE_URL}/search/adaptive.json", params=headers)
         # guest token probably expired or something of that sorts, attempt to do request again
@@ -53,7 +57,9 @@ def get_tweets(session, count, q):
             if iteration_count == MAX_ITERATION:
                 break
         elif response.ok:
-            result.append(parse_tweets(response.json()))
+            data = response.json()
+            result.append(parse_tweets(data))
+            cursor = get_next_token(data, cursor)
             count -= MAX_TWEET_COUNT
         else:
             count -= MAX_TWEET_COUNT
@@ -77,8 +83,11 @@ def lambda_handler(event, context):
 
 
 def main():
+    # include count if you want
+    input_data = {"query": "queen elizabeth", "count": 100}
     with open("../test/lambdas/result.json", "w") as file:
-        file.write(json.dumps(json.loads(lambda_handler(
-            {"query": "queen"}, None)["body"]), indent=4))
+        file.write(json.dumps(json.loads(
+            lambda_handler(input_data, None)["body"]), indent=4))
+
 
 main()
