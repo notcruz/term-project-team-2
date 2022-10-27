@@ -10,39 +10,12 @@ DEFAULT_HEADERS = {
     "x-guest-token": ""
 }
 DEFAULT_QUERY_PARAMS = {
-    "include_profile_interstitial_type": "1",
-    "include_blocking": "1",
-    "include_blocked_by": "1",
-    "include_followed_by": "1",
-    "include_want_retweets": "1",
-    "include_mute_edge": "1",
-    "include_can_dm": "1",
-    "include_can_media_tag": "1",
-    "include_ext_has_nft_avatar": "1",
     "skip_status": "1",
-    "cards_platform": "Web-12",
-    "include_cards": "1",
-    "include_ext_alt_text": "true",
-    "include_ext_limited_action_results": "false",
     "include_quote_count": "true",
     "include_reply_count": "1",
-    "tweet_mode": "extended",
-    "include_ext_collab_control": "true",
-    "include_entities": "true",
-    "include_user_entities": "true",
-    "include_ext_media_color": "true",
-    "include_ext_media_availability": "true",
-    "include_ext_sensitive_media_warning": "true",
-    "include_ext_trusted_friends_metadata": "true",
-    "send_error_codes": "true",
     "simple_quoted_tweet": "true",
-    "q": "",
-    "count": "20",
     "query_source": "typed_query",
-    "pc": "0",
-    "spelling_corrections": "1",
-    "include_ext_edit_control": "true",
-    "ext": "mediaStats,highlightedLabel,hasNftAvatar,replyvotingDownvotePerspective,voiceInfo,birdwatchPivot,enrichments,superFollowMetadata,unmentionInfo,editControl,collab_control,vibe"
+    "spelling_corrections": "1"
 }
 
 
@@ -54,6 +27,13 @@ def set_twitter_token(session):
     return response.ok
 
 
+def parse_tweets(json):
+    tweets = json["globalObjects"]["tweets"]
+    return [
+        {"created_at": tweets[key]["created_at"], "id": tweets[key]["id"], "text": tweets[key]["text"], "lang": tweets[key]["lang"], "geo": tweets[key]["geo"]} for key in tweets.keys()
+    ]
+
+
 def get_tweets(session, count, q):
     # shallow copy for the default params
     headers = DEFAULT_QUERY_PARAMS.copy()
@@ -63,7 +43,8 @@ def get_tweets(session, count, q):
         c = MAX_TWEET_COUNT
         headers.update({"q": q})
         headers.update({"count": c})
-        response = session.get(f"{BASE_URL}/search/adaptive.json", params=headers)
+        response = session.get(
+            f"{BASE_URL}/search/adaptive.json", params=headers)
         # guest token probably expired or something of that sorts, attempt to do request again
         # should probably handle this differently
         if response.status_code == 403:
@@ -72,7 +53,7 @@ def get_tweets(session, count, q):
             if iteration_count == MAX_ITERATION:
                 break
         elif response.ok:
-            result.append(response.json())
+            result.append(parse_tweets(response.json()))
             count -= MAX_TWEET_COUNT
         else:
             count -= MAX_TWEET_COUNT
@@ -93,3 +74,11 @@ def lambda_handler(event, context):
         return {"statusCode": 403}
     data = get_tweets(session, count, query)
     return {"statusCode": 200, "body": json.dumps({"request_count": len(data), "data": data})}
+
+
+def main():
+    with open("../test/lambdas/result.json", "w") as file:
+        file.write(json.dumps(json.loads(lambda_handler(
+            {"query": "queen"}, None)["body"]), indent=4))
+
+main()
