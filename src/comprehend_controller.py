@@ -8,27 +8,27 @@ def lambda_handler(event, context):
     bucket = "comprehend-test-bucket-raw"
 
     # My local testing setup, I will update to make dynamic later
-    key = "testrawtweets.txt"
-    text = s3.get_object(Bucket = bucket, Key = key)
-    review = text['Body'].read().decode('utf-8').split('\n')
+    file_name = "testrawtweets.txt"
+    text = s3.get_object(Bucket = bucket, Key = file_name)
+    tweets = text['Body'].read().decode('utf-8').split('\n')
     # Split text file up into an array so each individual tweet is analyzed
-    # Note: empty lines such as EOF will break the program
 
-    # Perform sentiment analysis on text from bucket
-    comprehend = boto3.client("comprehend")
-    response = comprehend.batch_detect_sentiment(TextList=review, LanguageCode='en')
-
-     # Lists to hold sentiment labels and sentiment scores
+    # Lists to hold sentiment labels and sentiment scores
     sentiments = []
     pos_score = []
     neg_score = []
     neutral_score = []
     mixed_score = []
 
-    for res in response['ResultList']:
+    # Perform sentiment analysis on each tweet
+    comprehend = boto3.client("comprehend")
+    for tweet in tweets:
+        tweet = tweet.strip()
+        if tweet == "":
+            continue
+        res = comprehend.detect_sentiment(Text = tweet, LanguageCode='en')
+
         sentiments.append(res['Sentiment'])
-        print(res['SentimentScore'])
-        print(type(res['SentimentScore']))
         for key, val in res['SentimentScore'].items():
             if key == "Positive":
                 pos_score.append(val)
