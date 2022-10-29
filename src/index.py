@@ -10,17 +10,20 @@ def main_lambda_handler(event, context):
     machines = client.list_state_machines()['stateMachines'] 
     
     for sfn in machines:
-        if sfn['name'] == 'main-state-machine':
+        if sfn['name'] == 'main-step-function':
             sfn_arn = sfn['stateMachineArn']
         
     execution = client.start_execution(
-        stateMachineArn = sfn_arn
+        stateMachineArn = sfn_arn,
+        input = 'string'
     )
 
     response = client.describe_execution(
         executionArn = execution['executionArn']
     )
 
+    # Keep checking the status of the Step Function
+    # Return results (contained in latest repsponse)
     while True:
         response = client.describe_execution(
             executionArn = execution['executionArn']
