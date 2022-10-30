@@ -7,15 +7,17 @@ client = boto3.client('stepfunctions')
 
 def main_lambda_handler(event, context):
 
+    name = event['name']
+
     machines = client.list_state_machines()['stateMachines'] 
     
     for sfn in machines:
         if sfn['name'] == 'main-step-function':
             sfn_arn = sfn['stateMachineArn']
-        
+
     execution = client.start_execution(
         stateMachineArn = sfn_arn,
-        input = 'string'
+        input = '{"name": \"' + name + '\"}'
     )
 
     response = client.describe_execution(
@@ -36,12 +38,16 @@ def main_lambda_handler(event, context):
             print("Still running...")
             continue
         elif status == 'FAILED':
-            raise Exception("Execution Failed: " + response)
+            print("Execution Failed: " + str(response))
+            return {
+                'statusCode': 500,
+                "body": 'Unable to calculate'
+            }
         else: 
             print("Finished")
             break
 
     return {
         'statusCode' : 200,
-        'body' : json.dumps(response['output']) 
+        'body' : response['output'] 
     }

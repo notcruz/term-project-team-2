@@ -52,7 +52,7 @@ resource "aws_lambda_function" "main_lambda" {
 
   source_code_hash = data.archive_file.lambda_archive.output_base64sha256
 
-  role = aws_iam_role.lambda_exec.arn
+  role = "arn:aws:iam::005412286853:role/LabRole"
 
   timeout = 15
 }
@@ -68,7 +68,7 @@ resource "aws_lambda_function" "check_data_lambda" {
 
   source_code_hash = data.archive_file.lambda_archive.output_base64sha256
 
-  role = aws_iam_role.lambda_exec.arn
+  role = "arn:aws:iam::005412286853:role/LabRole"
 
   timeout = 15
 }
@@ -84,7 +84,7 @@ resource "aws_lambda_function" "collection_lambda" {
 
   source_code_hash = data.archive_file.lambda_archive.output_base64sha256
 
-  role = aws_iam_role.lambda_exec.arn
+  role = "arn:aws:iam::005412286853:role/LabRole"
 
   timeout = 15
 }
@@ -100,7 +100,7 @@ resource "aws_lambda_function" "analysis_lambda" {
 
   source_code_hash = data.archive_file.lambda_archive.output_base64sha256
 
-  role = aws_iam_role.lambda_exec.arn
+  role = "arn:aws:iam::005412286853:role/LabRole"
 
   timeout = 15
 }

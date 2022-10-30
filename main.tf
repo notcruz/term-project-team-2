@@ -26,6 +26,12 @@ terraform {
 
 provider "aws" {
   region = "us-east-1"
+
+  access_key = ""
+
+  secret_key = ""
+
+  token = ""
 }
 
 /*
@@ -36,7 +42,7 @@ provider "aws" {
 
 resource "aws_sfn_state_machine" "sfn_state_machine" {
   name     = "main-step-function"
-  role_arn = aws_iam_role.step_function_exec.arn
+  role_arn = "arn:aws:iam::005412286853:role/LabRole"
 
   definition = <<EOF
 {
@@ -54,12 +60,12 @@ resource "aws_sfn_state_machine" "sfn_state_machine" {
       "Type": "Choice",
       "Choices": [
         {
-          "Variable": "$",
+          "Variable": "$.data",
           "IsNull": false,
           "Next": "Success"      
         },
         {
-          "Variable": "$",
+          "Variable": "$.data",
           "IsNull": true,
           "Next": "CollectAndStore"  
         }]
@@ -67,6 +73,7 @@ resource "aws_sfn_state_machine" "sfn_state_machine" {
 
     "CollectAndStore": {
       "Type": "Task",
+      "InputPath": "$.name",
       "Resource": "${aws_lambda_function.collection_lambda.arn}",
       "Next": "ConductAnalysis"
     },

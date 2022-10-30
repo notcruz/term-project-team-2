@@ -1,3 +1,14 @@
+
+/*
+ * Initial Cache file that's generated on deployment
+ */
+
+resource "aws_s3_object" "object" {
+  bucket = "rit-cloud-team-2-cached-data-bucket"
+  key = "default_cache"
+  source = "src/default_cache.json"
+}
+
 /*
  *  ========================================
  *                S3 Buckets
@@ -32,23 +43,3 @@ resource "aws_s3_bucket" "cache_bucket" {
   }
 }
 
-/*
- *  ========================================
- *            Access Privileges
- *  ========================================
- */
-
-resource "aws_s3_bucket_acl" "main_bucket_acl" {
-  bucket = aws_s3_bucket.lambda_bucket.id
-  acl    = "private"
-}
-
-resource "aws_s3_bucket_acl" "raw_data_bucket_acl" {
-  bucket = aws_s3_bucket.raw_data_bucket.id
-  acl    = "private"
-}
-
-resource "aws_s3_bucket_acl" "cache_bucket_acl" {
-  bucket = aws_s3_bucket.cache_bucket.id
-  acl    = "private"
-}
