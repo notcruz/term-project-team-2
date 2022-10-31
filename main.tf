@@ -94,7 +94,7 @@ resource "aws_dynamodb_table" "cache_table" {
   read_capacity  = 50
   write_capacity = 50
   hash_key       = "Name"
-  range_key      = "CurrentScore"
+  range_key      = "PostDeath"
 
   attribute {
     name = "Name"
@@ -102,7 +102,7 @@ resource "aws_dynamodb_table" "cache_table" {
   }
 
   attribute {
-    name = "CurrentScore"
+    name = "PostDeath"
     type = "S"
   }
 
