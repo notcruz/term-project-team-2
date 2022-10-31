@@ -99,11 +99,11 @@ resource "aws_dynamodb_table" "cache_table" {
   billing_mode   = "PROVISIONED"
   read_capacity  = 50
   write_capacity = 50
-  hash_key       = "PersonId"
+  hash_key       = "Name"
   range_key      = "CurrentScore"
 
   attribute {
-    name = "PersonId"
+    name = "Name"
     type = "S"
   }
 
