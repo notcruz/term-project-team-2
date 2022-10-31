@@ -3,10 +3,12 @@ import boto3
 
 def check_data_handler(event, context):
     
+    # UPDATE THIS SO THAT IT CHECKS DYNAMODB INSTEAD OF DATA CACHE
+
     name = event['name'].lower()
     
     s3 = boto3.resource("s3")
-    cacheBucket = s3.Bucket('rit-cloud-team-2-cached-data-bucket')
+    cacheBucket = s3.Bucket('rit-cloud-team-2-cached-data-bucket-test')
 
     if cacheBucket is None or not hasattr(cacheBucket, 'objects'):
         return {
