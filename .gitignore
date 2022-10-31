@@ -1,6 +1,6 @@
 
 # ignore .env
-/src/.env
+/lambdas/.env
 # ignore Terraform blobs (*terraform* filters all)
 /.terraform/
 .terraform.*
