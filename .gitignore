@@ -6,3 +6,5 @@
 .terraform.*
 terraform.*
 *.zip
+# ignore variables, store credentials here
+variables.tf
