@@ -4,7 +4,8 @@ import boto3
 from collections import defaultdict
 
 def analysis_handler(event, context):
-    # Filename passed in as query string parameter (ex. fileName=tweets.txt)
+    # Filename, name, and postDeath passed in as query string parameter 
+    # (ex. fileName=tweets.txt, name=QueenElizabeth, postDeath=True)
 
     # PULL DATA FROM RAW DATA BUCKET, RUN ANALYSIS    
     s3 = boto3.client("s3")

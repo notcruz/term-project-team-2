@@ -105,7 +105,7 @@ resource "aws_dynamodb_table" "cache_table" {
     name = "PostDeath"
     type = "S"
   }
-  
+
   tags = {
     Name        = "cache_table"
     Environment = "production"
