@@ -1,7 +1,9 @@
 import requests
+import boto3
 import json
 import tweepy
 from dotenv import dotenv_values
+import constants
 
 USER_CONFIG = dotenv_values("/Users/rvi/Documents/rcPersonal/Year5/Cloud/term-project-team-2/lambdas/.env")
 TW_CLIENT = tweepy.Client(USER_CONFIG['BEARER_TOKEN'])
@@ -78,6 +80,17 @@ def get_tweets(session, count, q):
         else:
             count -= MAX_TWEET_COUNT
     return result
+
+
+def createDynamoDbTable(name):
+    dyno = boto3.resource(DYNAMO)
+
+    table = dyno.create_table(TableName=TABLE_NAME,
+                              KeySchema=KEY_SCHEMA,
+                              AttributeDefinitions=ATTR_DEFINITIONS,
+                              ProvisionedThroughput=PRO_THRU)
+    table.wait_until_exists()
+    return table
 
 
 # POST /tweets
