@@ -5,6 +5,7 @@ from datetime import datetime, timedelta, date as d
 
 MAX_ITERATION = 10
 MAX_TWEET_COUNT = 20
+MIN_FAV_COUNT = "1000"
 DATE_FORMAT = "%Y-%m-%d"
 TWITTER_CREATION = "2006-3-21"
 API_BASE_URL = "https://api.twitter.com/1.1"
@@ -19,7 +20,7 @@ DEFAULT_QUERY_PARAMS = {
     "include_reply_count": "1",
     "simple_quoted_tweet": "true",
     "query_source": "typed_query",
-    "spelling_corrections": "1"
+    "spelling_corrections": "1",
 }
 
 
@@ -64,7 +65,7 @@ def get_tweets(session, count, q):
     cursor = None
     while count > 0:
         c = MAX_TWEET_COUNT
-        headers.update({"q": q, "count": c, "cursor": cursor})
+        headers.update({"q": q + f" min_faves:{MIN_FAV_COUNT}", "count": c, "cursor": cursor})
         response = session.get(
             f"{BASE_URL}/search/adaptive.json", params=headers)
         # guest token probably expired or something of that sorts, attempt to do request again
@@ -129,10 +130,11 @@ def lambda_handler(event, context):
         pre_death_query = f"{name} since:{since} until:{until}"
     else:
         # Death date was provided, so the person is dead
-        # Fetch tweets from a year before their death, up to their death
+        # Fetch tweets from a year before their death, up to their death - 1 day
         death_date = datetime.strptime(death, DATE_FORMAT).date()
         since = (death_date - timedelta(days=365)).strftime(DATE_FORMAT)
-        until = death_date.strftime(DATE_FORMAT)
+        # One day before death. Don't allow death tweets to influence this set
+        until = (death_date - timedelta(days=1)).strftime(DATE_FORMAT)
         pre_death_query = f"{name} since:{since} until:{until}"
 
     # Define post_death_query
@@ -157,7 +159,7 @@ def lambda_handler(event, context):
 
 def main():
     # include count if you want
-    input_data = {"name": "Queen Elizabeth", "death": "2022-4-21", "count": 100}
+    input_data = {"name": "Queen Elizabeth II", "death": "2022-9-8", "count": 150}
     with open("../../test/lambdas/result.json", "w") as file:
         file.write(json.dumps(json.loads(
             lambda_handler(input_data, None)["body"]), indent=4))
