@@ -44,18 +44,6 @@ def get_next_token(data, cursor):
         return data["timeline"]["instructions"][0]["addEntries"]["entries"][-1]["content"]["operation"]["cursor"]["value"]
     return data["timeline"]["instructions"][-1]["replaceEntry"]["entry"]["content"]["operation"]["cursor"]["value"]
 
-    """
-    Defines the query for Twitter's API. 
-    To be used to make requests on tweets pre/post death
-    """
-
-
-def define_query(name: str, date: str, is_death_date: bool):
-    query = ""
-    # Determine the
-
-    pass
-
 
 def get_tweets(session, count, q):
     # shallow copy for the default params
@@ -65,7 +53,8 @@ def get_tweets(session, count, q):
     cursor = None
     while count > 0:
         c = MAX_TWEET_COUNT
-        headers.update({"q": q + f" min_faves:{MIN_FAV_COUNT}", "count": c, "cursor": cursor})
+        headers.update({"q": q + f" min_faves:{MIN_FAV_COUNT}",
+                       "count": c, "cursor": cursor})
         response = session.get(
             f"{BASE_URL}/search/adaptive.json", params=headers)
         # guest token probably expired or something of that sorts, attempt to do request again
@@ -116,10 +105,10 @@ def lambda_handler(event, context):
     # Ensure a Twitter guest token was attached to the session
     if (not set_twitter_token(session)):
         return {"statusCode": 403, "body": json.dumps({"error": "Failed to set twitter token."})}
-    
+
     # Intialize the current date
     current_date = d.today()
-    
+
     # Define pre_death_query
     pre_death_query = None
     if not death:
@@ -150,16 +139,16 @@ def lambda_handler(event, context):
 
     # Initialize lists for tweets
     pre_death_tweets = get_tweets(session, count, pre_death_query)
-    post_death_tweets = [] if post_death_query == None else get_tweets(session, count, post_death_query)
+    post_death_tweets = [] if post_death_query == None else get_tweets(
+        session, count, post_death_query)
 
     return {"statusCode": 200, "body": json.dumps({"name": name, "pre": pre_death_tweets, "post": post_death_tweets})}
 
 
-# since / until
-
 def main():
     # include count if you want
-    input_data = {"name": "Queen Elizabeth II", "death": "2022-9-8", "count": 150}
+    input_data = {"name": "Queen Elizabeth II",
+                  "death": "2022-9-8", "count": 50}
     with open("../../test/lambdas/result.json", "w") as file:
         file.write(json.dumps(json.loads(
             lambda_handler(input_data, None)["body"]), indent=4))
