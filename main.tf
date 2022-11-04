@@ -86,28 +86,3 @@ resource "aws_sfn_state_machine" "sfn_state_machine" {
 
 EOF
 }
-
-
-resource "aws_dynamodb_table" "cache_table" {
-  name           = "CachedPeople"
-  billing_mode   = "PROVISIONED"
-  read_capacity  = 50
-  write_capacity = 50
-  hash_key       = "Name"
-  range_key      = "PostDeath"
-
-  attribute {
-    name = "Name"
-    type = "S"
-  }
-
-  attribute {
-    name = "PostDeath"
-    type = "S"
-  }
-
-  tags = {
-    Name        = "cache_table"
-    Environment = "production"
-  }
-}
