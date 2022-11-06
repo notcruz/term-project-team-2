@@ -22,6 +22,7 @@ DEFAULT_QUERY_PARAMS = {
     "query_source": "typed_query",
     "spelling_corrections": "1",
 }
+RAW_DATA_TABLE = "RawDataTable"
 
 
 def set_twitter_token(session):
@@ -72,17 +73,6 @@ def get_tweets(session, count, q):
         else:
             count -= MAX_TWEET_COUNT
     return result
-
-
-def createDynamoDbTable(name):
-    dyno = boto3.resource(DYNAMO)
-
-    table = dyno.create_table(TableName=TABLE_NAME,
-                              KeySchema=KEY_SCHEMA,
-                              AttributeDefinitions=ATTR_DEFINITIONS,
-                              ProvisionedThroughput=PRO_THRU)
-    table.wait_until_exists()
-    return table
 
 
 def lambda_handler(event, context):
@@ -142,7 +132,13 @@ def lambda_handler(event, context):
     post_death_tweets = [] if post_death_query == None else get_tweets(
         session, count, post_death_query)
 
-    return {"statusCode": 200, "body": json.dumps({"name": name, "pre": pre_death_tweets, "post": post_death_tweets})}
+    body = {"name": name.replace(" ",""), "pre": pre_death_tweets, "post": post_death_tweets}
+
+    dynamodb = boto3.resource("dynamodb")
+    raw_table = dynamodb.Table(RAW_DATA_TABLE)
+    response = raw_table.put_item(Item=body)
+
+    return {"statusCode": 200, "body": json.dumps(response)}
 
 
 def main():
