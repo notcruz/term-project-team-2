@@ -21,10 +21,10 @@ resource "aws_dynamodb_table" "raw_data_table" {
   billing_mode = "PROVISIONED"
   read_capacity = 50
   write_capacity = 50
-  hash_key = "Name"
+  hash_key = "name"
 
   attribute {
-    name = "Name"
+    name = "name"
     type = "S"
   }
 
