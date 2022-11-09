@@ -1,4 +1,3 @@
-import { Input } from "@mui/material";
 import { useState } from "react";
 
 function App() {
@@ -6,9 +5,20 @@ function App() {
   const [count, setCount] = useState(50);
   const [date, setDate] = useState();
 
+  const handleSubmit = () => {
+    fetch("/", {
+      method: "POST",
+      body: JSON.stringify({ name: input, count, date: new Date() }),
+    });
+  };
+
+  const isEnabledEnabled = () => {
+    return input && count && date;
+  };
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center text-center">
-      <body>
+      <div>
         <div>
           <h1 className="font-bold text-5xl text-indigo-400">
             Sentimental Analysis v2
@@ -21,7 +31,7 @@ function App() {
           </p>
         </div>
         <div className="mt-6 flex flex-wrap flex-col space-y-3 items-center justify-center">
-          <div className="flex flex-col gap-y-3">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-y-3">
             <div className="flex flex-col items-start">
               <div className={"mb-0.5"}>
                 <h3 className="font-bold">Celebrity Name</h3>
@@ -67,13 +77,17 @@ function App() {
               </div>
             </div>
             <div className="flex mt-3">
-              <button className="w-full rounded-md bg-indigo-400 font-bold px-4 py-1.5 hover:scale-105 duration-300">
+              <button
+                type={"submit"}
+                disabled={!isEnabledEnabled()}
+                className="w-full rounded-md bg-indigo-400 font-bold px-4 py-1.5 hover:scale-105 duration-300 transition disabled:opacity-50 disabled:hover:scale-100 disabled:hover:cursor-not-allowed"
+              >
                 Search
               </button>
             </div>
-          </div>
+          </form>
         </div>
-      </body>
+      </div>
     </div>
   );
 }
