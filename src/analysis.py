@@ -126,7 +126,7 @@ def _process_tweets(comprehend, tweets):
                 tweet_scores[id]['Positive'] = str(val)
                 pos_aggr_score += float(val)
             if key == "Negative":
-                tweet_scores[id]['Negatve'] = str(val)
+                tweet_scores[id]['Negative'] = str(val)
                 neg_aggr_score += float(val)
             if key == "Neutral":
                 tweet_scores[id]['Neutral'] = str(val)
