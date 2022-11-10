@@ -1,57 +1,34 @@
 import {GetServerSideProps} from "next";
 import {LambdaResponse, QueryParams} from "~/core/types";
-import {PolarArea} from "~/core/components/charts";
-
+import {Calculations, Tweets} from "~/core/components";
 
 const Result = ({query}: { query: QueryParams }) => {
-   const result = getData()
-
+    /* fetch from api gateway and get result */
+    const result = getData();
     return (
-        <div className="min-h-screen flex flex-col items-center text-center">
-            <div>
-                <h1 className="font-bold text-5xl">Results for {query.name}</h1>
+        <div className="min-h-screen flex flex-col items-center text-center gap-y-10">
+            <div className={"mt-20"}>
+                <h1 className="font-bold text-6xl">
+                    Results for {" "}
+                    <span className={"text-indigo-500"}>{query.name}</span>
+                </h1>
             </div>
-            <div>
+            <div className={"border-t-2 border-gray-800 pt-10"}>
                 <div>
-
+                    <h2 className={"font-bold text-5xl"}>Calculated Sentiment</h2>
                 </div>
-                <div className="flex">
-                    <div className="rounded-md w-[35rem]">
-                        <PolarArea {...result.Data.Score.Pre} />
-                    </div>
-                    <div className="rounded-md w-[35rem]">
-                        <PolarArea {...result.Data.Score.Post} />
-                    </div>
+                <div className="flex gap-x-32 mt-3">
+                    <Calculations title={"Before Death"} data={result.Data.Score.Pre}/>
+                    <Calculations title={"After Death"} data={result.Data.Score.Post}/>
                 </div>
             </div>
-            <div>
+            <div className={"border-t-2 border-gray-800 pt-10"}>
                 <div>
                     <h2 className={"font-bold text-5xl"}>Processed Tweets</h2>
                 </div>
-                <div className={"flex"}>
-                    <div>
-                        <div>
-                            <div>
-                                <h3>Pre-Death Tweets</h3>
-                            </div>
-                            <div>
-                                <h3>range</h3>
-                            </div>
-                        </div>
-                        <div>
-
-                        </div>
-                    </div>
-                    <div>
-                        <div>
-                            <div>
-                                <h3>Post-Death Tweets</h3>
-                            </div>
-                            <div>
-                                <h3>range</h3>
-                            </div>
-                        </div>
-                    </div>
+                <div className={"flex gap-x-32 mt-3"}>
+                    <Tweets title={"Before Death"} ids={Object.keys(result.Data.Samples.Pre)}/>
+                    <Tweets title={"After Death"} ids={Object.keys(result.Data.Samples.Post)}/>
                 </div>
             </div>
         </div>
