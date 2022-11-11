@@ -18,8 +18,8 @@ const Result = ({query}: { query: QueryParams }) => {
                     <h2 className={"font-bold text-5xl"}>Calculated Sentiment</h2>
                 </div>
                 <div className="flex gap-x-32 mt-3">
-                    <Calculations title={"Before Death"} data={result.Data.Score.Pre}/>
-                    <Calculations title={"After Death"} data={result.Data.Score.Post}/>
+                    <Calculations title={"Before Death"} data={result.Data.Frequency.Pre}/>
+                    <Calculations title={"After Death"} data={result.Data.Frequency.Post}/>
                 </div>
             </div>
             <div className={"border-t-2 border-gray-800 pt-10"}>

@@ -26,6 +26,41 @@ export type Post = {
     Sentiment: string
 }
 
+export type WikipediaResult = {
+    item: {
+        "type": "uri",
+        "value": string
+    },
+    itemLabel: {
+        "xml:lang": "en",
+        "type": "literal",
+        "value": string
+    },
+    itemDescription: {
+        "xml:lang": "en",
+        "type": "literal",
+        "value": string
+    },
+    DR: {
+        "datatype": "http://www.w3.org/2001/XMLSchema#dateTime",
+        "type": "literal",
+        "value": string
+    },
+    RIP?: {
+        "datatype": "http://www.w3.org/2001/XMLSchema#dateTime",
+        "type": "literal",
+        value: string
+    }
+    article: {
+        "type": "uri",
+        "value": string
+    },
+    image?: {
+        type: "uri",
+        value: string
+    }
+}
+
 export type LambdaResponse = {
     Name: string;
     Data: {

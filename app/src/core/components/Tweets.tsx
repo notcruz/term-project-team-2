@@ -22,7 +22,7 @@ const Tweets = (props: props) => {
                 {props.ids.map((id) => {
                     return (
                         /* handle race condition when incrementing state */
-                        <TwitterTweetEmbed onLoad={() => setCount((prev) => prev + 1)} tweetId={id}/>
+                        <TwitterTweetEmbed key={id} onLoad={() => setCount((prev) => prev + 1)} tweetId={id}/>
                     )
                 })}
             </div>
