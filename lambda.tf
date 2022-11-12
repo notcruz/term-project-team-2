@@ -80,7 +80,7 @@ resource "aws_lambda_function" "collection_lambda" {
   s3_key    = aws_s3_object.lambda_object.key
 
   runtime = "python3.7"
-  handler = "collection.collection_lambda_handler"
+  handler = "twitter/tweets_fetcher.lambda_handler"
 
   source_code_hash = data.archive_file.lambda_archive.output_base64sha256
 
