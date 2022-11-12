@@ -7,21 +7,16 @@ def check_data_handler(event, context):
 
     name = event['name'].lower()
     
-    s3 = boto3.resource("s3")
-    cacheBucket = s3.Bucket('rit-cloud-team-2-cached-data-bucket-test')
-
-    if cacheBucket is None or not hasattr(cacheBucket, 'objects'):
-        return {
-            "name" : name,
-            "data": None
-        }
+    dynamodb = boto3.resource("s3")
+    table = dynamodb.Bucket('CachedPeople')
     
-    for object in cacheBucket.objects.all():
-        contents = json.loads(object.get()['Body'].read().decode('utf-8'))
-
-        for person in contents['cachedNames']:
-            if person['name'].lower() == name.lower():
-                return person
+    response = table.get_item(
+        Key={
+            'Name': 'string'
+        },
+        ConsistentRead=True|False,
+        ProjectionExpression='Name'
+    )
 
     return {
         "name": name,
