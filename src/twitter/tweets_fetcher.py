@@ -138,7 +138,7 @@ def lambda_handler(event, context):
     raw_table = dynamodb.Table(RAW_DATA_TABLE)
     response = raw_table.put_item(Item=body)
 
-    return {"statusCode": 200, "body": json.dumps(response)}
+    return {"statusCode": 200, "name":name.replace(" ",""), "body": json.dumps(response)}
 
 
 def main():

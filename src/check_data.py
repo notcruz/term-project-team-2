@@ -1,24 +1,36 @@
 import json
 import boto3
 
+RESULTS_DATA_TABLE = "CachedPeople"
+
 def check_data_handler(event, context):
     
-    # UPDATE THIS SO THAT IT CHECKS DYNAMODB INSTEAD OF DATA CACHE
+    dynamodb = boto3.resource("dynamodb")
+    results_table = dynamodb.Table(RESULTS_DATA_TABLE)
+    
+    if 'name' not in event:
+        return {"statusCode": 400, "body": json.dumps({"error": f"Query string parameter (name) is missing"})}
 
-    name = event['name'].lower()
+    death = None if 'death' not in event else event["death"]
     
-    dynamodb = boto3.resource("s3")
-    table = dynamodb.Bucket('CachedPeople')
-    
-    response = table.get_item(
+    name = event['name']
+
+    response = results_table.get_item(
+        TableName=RESULTS_DATA_TABLE,
         Key={
-            'Name': 'string'
-        },
-        ConsistentRead=True|False,
-        ProjectionExpression='Name'
+            'Name': name.replace(" ","")
+        }
     )
+
+    if 'Item' not in response:
+        return {
+            "name": name,
+            "death": death,
+            "data": None
+        }
 
     return {
         "name": name,
-        "data": None
+        "death": death,
+        "data": response["Item"]
     }

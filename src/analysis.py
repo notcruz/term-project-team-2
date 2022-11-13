@@ -17,7 +17,7 @@ def analysis_handler(event, context):
     if 'queryStringParameters' in event and 'name' not in event['queryStringParameters']:
         return {"statusCode": 403, "body": json.dumps({"error": f"Query string parameter (name) is missing"})}
 
-    name = event['queryStringParameters']['name']
+    name = event['name']
 
     # From Dynamo
     inp_response = raw_table.get_item(
@@ -43,8 +43,11 @@ def analysis_handler(event, context):
 
     # Grab random sample tweets and corresponding scores
     NUM_OF_SAMPLES = 5
-    pre_samples = _get_samples(pre_tweet_scores, NUM_OF_SAMPLES)
-    post_samples = _get_samples(post_tweet_scores, NUM_OF_SAMPLES)
+    pre_samples = [] if not pre_tweets else _get_samples(pre_tweet_scores, NUM_OF_SAMPLES)
+
+    # If the person hasn't died then don't collect samples
+    post_samples = [] if not post_tweets else _get_samples(post_tweet_scores, NUM_OF_SAMPLES)
+        
 
     # Store both pre and post in the same dynamodb row
     # Aggregated scores are string because DynamoDB does not support float.
@@ -136,9 +139,11 @@ def _process_tweets(comprehend, tweets):
                 mixed_aggr_score += float(val)
 
     num_of_tweets = len(tweets)
-    pos_aggr_score /= num_of_tweets
-    neg_aggr_score /= num_of_tweets
-    mixed_aggr_score /= num_of_tweets
-    neutral_aggr_score /= num_of_tweets
+
+    if num_of_tweets > 0:
+        pos_aggr_score /= num_of_tweets
+        neg_aggr_score /= num_of_tweets
+        mixed_aggr_score /= num_of_tweets
+        neutral_aggr_score /= num_of_tweets
 
     return sentiment_counts, pos_aggr_score, neg_aggr_score, mixed_aggr_score, neutral_aggr_score, tweet_scores

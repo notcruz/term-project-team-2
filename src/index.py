@@ -2,12 +2,23 @@ import json
 from urllib import response
 import boto3
 import time
+from string import Template
 
 client = boto3.client('stepfunctions')
 
 def main_lambda_handler(event, context):
 
-    name = event['name']
+    if "queryStringParameters" not in event:
+        return {
+            "statusCode": 400,
+            "body": {
+                "message": "No name specified :("
+            }
+        }
+
+    name = event['queryStringParameters']['name']
+
+    death = None if 'death' not in event['queryStringParameters'] else event['queryStringParameters']['death']
 
     machines = client.list_state_machines()['stateMachines'] 
     
@@ -15,9 +26,13 @@ def main_lambda_handler(event, context):
         if sfn['name'] == 'main-step-function':
             sfn_arn = sfn['stateMachineArn']
 
+    inp_json = Template('{"name":  "${inputName}", "death": "${deathDate}"}')
+    
+    print(inp_json.safe_substitute(inputName=name, deathDate=death))
+
     execution = client.start_execution(
         stateMachineArn = sfn_arn,
-        input = '{"name": \"' + name + '\"}'
+        input = json.dumps(json.loads(inp_json.substitute(inputName=name, deathDate=str(death))))
     )
 
     response = client.describe_execution(
@@ -41,7 +56,7 @@ def main_lambda_handler(event, context):
             print("Execution Failed: " + str(response))
             return {
                 'statusCode': 500,
-                "body": 'Unable to calculate'
+                "body": str(response)
             }
         else: 
             print("Finished")

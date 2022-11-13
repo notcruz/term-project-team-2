@@ -67,7 +67,7 @@ resource "aws_sfn_state_machine" "sfn_state_machine" {
 
     "CollectAndStore": {
       "Type": "Task",
-      "InputPath": "$.name",
+      "InputPath": "$",
       "Resource": "${aws_lambda_function.collection_lambda.arn}",
       "Next": "ConductAnalysis"
     },
