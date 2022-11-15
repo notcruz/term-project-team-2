@@ -13,12 +13,3 @@ resource "aws_s3_bucket" "lambda_bucket" {
     Environment = "Dev"
   }
 }
-
-resource "aws_s3_bucket" "ReactJS_bucket" {
-  bucket = "rit-cloud-team-2-ReactJS-bucket-test1"
-
-  tags = {
-    Name        = "ReactJS_bucket"
-    Environment = "Dev"
-  }
-}
