@@ -54,7 +54,7 @@ resource "aws_lambda_function" "main_lambda" {
 
   role = var.lab_role_arn
 
-  timeout = 15
+  timeout = 60
 }
 
 resource "aws_lambda_function" "check_data_lambda" {
@@ -70,7 +70,7 @@ resource "aws_lambda_function" "check_data_lambda" {
 
   role = var.lab_role_arn
 
-  timeout = 15
+  timeout = 60
 }
 
 resource "aws_lambda_function" "collection_lambda" {
@@ -86,7 +86,7 @@ resource "aws_lambda_function" "collection_lambda" {
 
   role = var.lab_role_arn
 
-  timeout = 15
+  timeout = 60
 }
 
 resource "aws_lambda_function" "analysis_lambda" {
@@ -102,5 +102,5 @@ resource "aws_lambda_function" "analysis_lambda" {
 
   role = var.lab_role_arn
 
-  timeout = 15
+  timeout = 60
 }

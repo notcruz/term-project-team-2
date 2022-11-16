@@ -10,15 +10,20 @@ const Home: NextPage = () => {
     const [count, setCount] = useState<string>("50");
     const [date, setDate] = useState<string>();
 
-    const [result, setResult] = useState([]);
+    const [result, setResult] = useState<WikipediaResult[]>([]);
 
     /* refreshes components, should probably fix */
     useEffect(() => {
         const delayDebounceFn = setTimeout(() => {
             fetch(getQueryURL(input), {
                 headers: {"accept": "application/sparql-results+json"},
-            }).then((response) => response.json()).then((json) => setResult(json.results.bindings));
-            // Send Axios request here
+            })
+                .then((response) => response.json())
+                .then((json) =>
+                    setResult((json.results.bindings as WikipediaResult[])
+                        .filter((r) => (r.RIP && r.RIP.value >= "2006-3-21") || (!r.RIP && r.DR))
+                    )
+                );
         }, 750)
 
         return () => clearTimeout(delayDebounceFn)
@@ -70,7 +75,7 @@ const Home: NextPage = () => {
                             {
                                 result.map((result: WikipediaResult) => {
                                     return (
-                                        <button key={result.itemLabel.value} onClick={() => setSuggested(result)}
+                                        <button key={result.item.value} onClick={() => setSuggested(result)}
                                                 className={"py-3 px-5 w-full transition duration-300 hover:bg-indigo-500 hover:text-white"}>
                                             <div>
                                                 <p className={"font-semibold"}>{result.itemLabel.value}</p>

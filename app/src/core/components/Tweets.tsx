@@ -16,7 +16,7 @@ const Tweets = (props: props) => {
         /* little setup to wait until all tweets load and update parent to center items to prevent width reduction */
         <div className={twMerge("flex flex-col w-[40rem]", count === 5 && "items-center")}>
             <div>
-                <h3 className={"font-semibold text-3xl"}>{props.title}</h3>
+                <h3 className={"font-semibold text-4xl"}>{props.title}</h3>
             </div>
             <div>
                 {props.ids.map((id) => {

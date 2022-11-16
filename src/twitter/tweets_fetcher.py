@@ -144,7 +144,7 @@ def lambda_handler(event, context):
 def main():
     # include count if you want
     input_data = {"name": "Queen Elizabeth II",
-                  "death": "2022-9-8", "count": 50}
+                  "death": "2022-9-8", "count": 250}
     with open("../../test/lambdas/result.json", "w") as file:
         file.write(json.dumps(json.loads(
             lambda_handler(input_data, None)["body"]), indent=4))

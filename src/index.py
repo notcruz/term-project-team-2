@@ -6,6 +6,9 @@ from string import Template
 
 client = boto3.client('stepfunctions')
 
+DEFAULT_DEATH = None
+DEFAULT_COUNT = 50
+
 def main_lambda_handler(event, context):
 
     if "queryStringParameters" not in event:
@@ -18,7 +21,9 @@ def main_lambda_handler(event, context):
 
     name = event['queryStringParameters']['name']
 
-    death = None if 'death' not in event['queryStringParameters'] else event['queryStringParameters']['death']
+    death = DEFAULT_DEATH if 'death' not in event['queryStringParameters'] else event['queryStringParameters']['death']
+
+    count = DEFAULT_COUNT if 'count' not in event['queryStringParameters'] else event['queryStringParameters']['count']
 
     machines = client.list_state_machines()['stateMachines'] 
     
@@ -26,13 +31,13 @@ def main_lambda_handler(event, context):
         if sfn['name'] == 'main-step-function':
             sfn_arn = sfn['stateMachineArn']
 
-    inp_json = Template('{"name":  "${inputName}", "death": "${deathDate}"}')
+    inp_json = Template('{"name":  "${inputName}", "death": "${deathDate}", "count": ${tweetCount}}')
     
-    print(inp_json.safe_substitute(inputName=name, deathDate=death))
+    print(inp_json.safe_substitute(inputName=name, deathDate=death, tweetCount=count))
 
     execution = client.start_execution(
         stateMachineArn = sfn_arn,
-        input = json.dumps(json.loads(inp_json.substitute(inputName=name, deathDate=str(death))))
+        input = json.dumps(json.loads(inp_json.substitute(inputName=name, deathDate=str(death), tweetCount=count)))
     )
 
     response = client.describe_execution(
