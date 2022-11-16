@@ -5,9 +5,18 @@
  */
 
 
+
+
 resource "aws_instance" "web" {
-  ami           = data.aws_ami.ubuntu.id
+  ami           = "ami-01e9feb53a7e6a16a"
   instance_type = "t3.micro"
+
+  connection {
+    type        = "ssh"
+    host        = self.public_ip
+    user        = "root"
+    private_key = file(".ssh/id_ed25519")
+  }
 
   user_data = <<-EOL
   #!/bin/bash -xe
@@ -27,6 +36,6 @@ resource "aws_instance" "web" {
   EOL
 
   tags = {
-    Name = "HelloWorld"
+    Name = "SentimentFrontEnd"
   }
 }
