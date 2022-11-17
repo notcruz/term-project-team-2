@@ -15,8 +15,8 @@
 data "archive_file" "lambda_archive" {
   type = "zip"
 
-  source_dir  = "${path.module}/src"
-  output_path = "${path.module}/src.zip"
+  source_dir  = "${path.module}/src/lambdas"
+  output_path = "${path.module}/src/lambdas.zip"
 }
 
 /*
@@ -29,7 +29,7 @@ data "archive_file" "lambda_archive" {
 resource "aws_s3_object" "lambda_object" {
   bucket = aws_s3_bucket.lambda_bucket.id
 
-  key    = "src.zip"
+  key    = "lambdas.zip"
   source = data.archive_file.lambda_archive.output_path
 
   etag = filemd5(data.archive_file.lambda_archive.output_path)
@@ -54,7 +54,7 @@ resource "aws_lambda_function" "main_lambda" {
 
   role = var.lab_role_arn
 
-  timeout = 15
+  timeout = 60
 }
 
 resource "aws_lambda_function" "check_data_lambda" {
@@ -70,7 +70,7 @@ resource "aws_lambda_function" "check_data_lambda" {
 
   role = var.lab_role_arn
 
-  timeout = 15
+  timeout = 60
 }
 
 resource "aws_lambda_function" "collection_lambda" {
@@ -86,7 +86,7 @@ resource "aws_lambda_function" "collection_lambda" {
 
   role = var.lab_role_arn
 
-  timeout = 15
+  timeout = 60
 }
 
 resource "aws_lambda_function" "analysis_lambda" {
@@ -102,5 +102,5 @@ resource "aws_lambda_function" "analysis_lambda" {
 
   role = var.lab_role_arn
 
-  timeout = 15
+  timeout = 60
 }
