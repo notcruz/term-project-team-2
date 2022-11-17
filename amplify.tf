@@ -7,27 +7,7 @@ resource "aws_amplify_app" "front-end" {
   access_token = ""
 
   # The default build_spec added by the Amplify Console for React.
-  build_spec = <<-EOT
-    version: 1
-    applications:
-      - frontend:
-          phases:
-            preBuild:
-              commands:
-                - yarn install
-            build:
-              commands:
-                - ENDPOINT=${ENDPOINT}
-                - yarn run build
-          artifacts:
-            baseDirectory: .next
-            files:
-              - '**/*'
-          cache:
-            paths:
-              - node_modules/**/*
-        appRoot: src/app
-  EOT
+  // build_spec = yamldecode(file("amplify.yml"))
 
   enable_auto_branch_creation = true
   enable_branch_auto_build = true
