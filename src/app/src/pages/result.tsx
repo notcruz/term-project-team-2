@@ -5,8 +5,6 @@ import {useEffect, useState} from "react";
 import {useRouter} from "next/router";
 import {twMerge} from "tailwind-merge";
 
-const ENDPOINT = "https://baifc08hf3.execute-api.us-east-1.amazonaws.com/serverless_lambda_stage";
-
 const Result = ({query}: { query: QueryParams }) => {
     const [result, setResult] = useState<LambdaResponse>();
     const [type, setType] = useState<"frequency" | "score">("frequency");
@@ -15,7 +13,7 @@ const Result = ({query}: { query: QueryParams }) => {
     /* fetch from api gateway and get result */
     useEffect(() => {
         const fetchData = async () => {
-            const response = await fetch(`${ENDPOINT}/?name=${query.name}&count=${query.count}&death=${query.date}`)
+            const response = await fetch(`${process.env.ENDPOINT}/?name=${query.name}&count=${query.count}&death=${query.date}`)
                 .then((r) => r.json());
             if (response.data)
                 setResult(response.data);
