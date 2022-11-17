@@ -1,6 +1,6 @@
 resource "aws_amplify_app" "front-end" {
   name       = "front-end"
-  repository = "https://github.com/notcruz/term-project-team-2"
+  repository = "https://github.com/swen-514-614-fall2022/term-project-team-2"
 
   /* Attach Github Access Token Here - https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/amplify_app#repository-with-tokens */
   /* Manually Run Build - https://us-east-1.console.aws.amazon.com/amplify/home */
