@@ -71,7 +71,14 @@ const Home: NextPage = () => {
                         <div className={"py-3 border-b border-gray-300"}>
                             <h2 className={"font-bold text-xl"}>Suggested Individuals</h2>
                         </div>
-                        <div className={"overflow-y-auto"}>
+                        <div className={"overflow-y-auto flex flex-col flex-1"}>
+                            {
+                                (!result || result.length == 0) && (
+                                    <div className={"mt-32"}>
+                                        <p>No results found!</p>
+                                    </div>
+                                )
+                            }
                             {
                                 result.map((result: WikipediaResult) => {
                                     return (

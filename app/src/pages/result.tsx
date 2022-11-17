@@ -8,23 +8,26 @@ import {twMerge} from "tailwind-merge";
 const ENDPOINT = "https://baifc08hf3.execute-api.us-east-1.amazonaws.com/serverless_lambda_stage";
 
 const Result = ({query}: { query: QueryParams }) => {
-    if (!query || !query.name || !query.count)
-        return <Error/>;
-
-    /* fetch from api gateway and get result */
     const [result, setResult] = useState<LambdaResponse>();
     const [type, setType] = useState<"frequency" | "score">("frequency");
     const router = useRouter();
 
+    /* fetch from api gateway and get result */
     useEffect(() => {
         const fetchData = async () => {
             const response = await fetch(`${ENDPOINT}/?name=${query.name}&count=${query.count}&death=${query.date}`)
                 .then((r) => r.json());
-            setResult(response.data);
+            if (response.data)
+                setResult(response.data);
+            else
+                setResult(JSON.parse(response.body).Data);
         };
         if (router.isReady)
             fetchData();
     }, []);
+
+    if (!query || !query.name || !query.count)
+        return <Error/>;
 
     if (!result) return <Loading name={query.name} count={query.count}/>;
 
