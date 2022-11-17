@@ -3,6 +3,7 @@ resource "aws_amplify_app" "front-end" {
   repository = "https://github.com/notcruz/term-project-team-2"
 
   /* Attach Github Access Token Here - https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/amplify_app#repository-with-tokens */
+  /* Manually Run Build - https://us-east-1.console.aws.amazon.com/amplify/home */
   access_token = ""
 
   # The default build_spec added by the Amplify Console for React.
@@ -16,6 +17,7 @@ resource "aws_amplify_app" "front-end" {
                 - yarn install
             build:
               commands:
+                - ENDPOINT=${ENDPOINT}
                 - yarn run build
           artifacts:
             baseDirectory: .next
@@ -35,7 +37,7 @@ resource "aws_amplify_app" "front-end" {
   auto_branch_creation_config {
     enable_pull_request_preview = true
     environment_variables = {
-      APP_ENVIRONMENT = "develop"
+      APP_ENVIRONMENT = "main"
     }
   }
 
@@ -53,9 +55,9 @@ resource "aws_amplify_app" "front-end" {
   }
 }
 
-resource "aws_amplify_branch" "develop" {
+resource "aws_amplify_branch" "main" {
   app_id      = aws_amplify_app.front-end.id
-  branch_name = "develop"
+  branch_name = "main"
 
   enable_auto_build = true
 
@@ -63,6 +65,6 @@ resource "aws_amplify_branch" "develop" {
   stage     = "DEVELOPMENT"
 
   environment_variables = {
-    APP_ENVIRONMENT = "develop"
+    APP_ENVIRONMENT = "main"
   }
 }
