@@ -6,10 +6,10 @@
  */
 
 resource "aws_s3_bucket" "lambda_bucket" {
-  bucket = "rit-cloud-team-2-lambda-bucket-test3"
+  bucket = "rit-cloud-team-2-lambda-bucket-test19"
 
   tags = {
-    Name = "Main_Lambda_Bucket"
+    Name        = "Main_Lambda_Bucket"
     Environment = "Dev"
   }
 }
