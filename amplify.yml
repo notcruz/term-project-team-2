@@ -7,7 +7,7 @@ applications:
             - yarn install
         build:
           commands:
-            - echo "ENDPOINT=$ENDPOINT" >> backend/.env
+            - echo "ENDPOINT=$ENDPOINT" >> .env
             - yarn run build
       artifacts:
         baseDirectory: .next
