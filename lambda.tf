@@ -15,8 +15,8 @@
 data "archive_file" "lambda_archive" {
   type = "zip"
 
-  source_dir  = "${path.module}/src"
-  output_path = "${path.module}/src.zip"
+  source_dir  = "${path.module}/src/lambdas"
+  output_path = "${path.module}/src/lambdas.zip"
 }
 
 /*
@@ -29,7 +29,7 @@ data "archive_file" "lambda_archive" {
 resource "aws_s3_object" "lambda_object" {
   bucket = aws_s3_bucket.lambda_bucket.id
 
-  key    = "src.zip"
+  key    = "lambdas.zip"
   source = data.archive_file.lambda_archive.output_path
 
   etag = filemd5(data.archive_file.lambda_archive.output_path)

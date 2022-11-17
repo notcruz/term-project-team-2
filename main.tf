@@ -26,6 +26,11 @@ terraform {
 
 provider "aws" {
   region = "us-east-1"
+
+  /* Fill these strings with your AWS Information */
+  access_key=""
+  secret_key=""
+  token=""
 }
 
 /*
