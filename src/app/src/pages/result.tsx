@@ -8,13 +8,12 @@ import {twMerge} from "tailwind-merge";
 const Result = ({query}: { query: QueryParams }) => {
     const [result, setResult] = useState<LambdaResponse>();
     const [type, setType] = useState<"frequency" | "score">("frequency");
-    const [endpoint, setEndpoint] = useState(process.env.NEXT_PUBLIC_ENDPOINT);
     const router = useRouter();
 
     /* fetch from api gateway and get result */
     useEffect(() => {
         const fetchData = async () => {
-            const response = await fetch(`${endpoint}/?name=${query.name}&count=${query.count}&death=${query.date}`)
+            const response = await fetch(`${process.env.NEXT_PUBLIC_ENDPOINT}/?name=${query.name}&count=${query.count}&death=${query.date}`)
                 .then((r) => r.json());
             if (response.data)
                 setResult(response.data);
