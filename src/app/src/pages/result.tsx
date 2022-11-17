@@ -5,7 +5,7 @@ import {useEffect, useState} from "react";
 import {useRouter} from "next/router";
 import {twMerge} from "tailwind-merge";
 
-const ENDPOINT = process.env.ENDPOINT;
+const ENDPOINT = process.env.NEXT_PUBLIC_ENDPOINT;
 
 const Result = ({query}: { query: QueryParams }) => {
     const [result, setResult] = useState<LambdaResponse>();
