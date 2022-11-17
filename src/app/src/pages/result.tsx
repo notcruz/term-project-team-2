@@ -12,6 +12,8 @@ const Result = ({query}: { query: QueryParams }) => {
     const [type, setType] = useState<"frequency" | "score">("frequency");
     const router = useRouter();
 
+    console.log(process.env)
+
     /* fetch from api gateway and get result */
     useEffect(() => {
         const fetchData = async () => {
