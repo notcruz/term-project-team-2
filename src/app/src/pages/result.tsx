@@ -20,7 +20,7 @@ const Result = ({query}: { query: QueryParams }) => {
             if (response.data)
                 setResult(response.data);
             else
-                setResult(JSON.parse(response.body).Data);
+                setResult(JSON.parse(response.body));
         };
         if (router.isReady)
             fetchData();
