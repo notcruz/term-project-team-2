@@ -2,7 +2,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 4.0.0"
+      version = "~> 4.45.0"
     }
     random = {
       source  = "hashicorp/random"
@@ -20,17 +20,14 @@ terraform {
 /*
  *  ========================================
  *             AWS Credentials
- *  (UPDATE THESE FOR USE WITH YOUR OWN ACCOUNT)
  *  ========================================
  */
 
 provider "aws" {
   region = "us-east-1"
-
-  /* Fill these strings with your AWS Information */
-  access_key=""
-  secret_key=""
-  token=""
+  access_key = var.aws_access_key
+  secret_key = var.aws_secret_key
+  token = var.aws_token
 }
 
 /*
