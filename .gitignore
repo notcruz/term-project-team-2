@@ -3,10 +3,12 @@
 
 # ignore .env
 /lambdas/.env
+
 # ignore Terraform blobs (*terraform* filters all)
 /.terraform/
 .terraform.*
 terraform.*
 *.zip
+
 # ignore variables, store credentials here
 variables.tf

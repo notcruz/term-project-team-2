@@ -10,7 +10,7 @@ applications:
             - echo "NEXT_PUBLIC_ENDPOINT=$NEXT_PUBLIC_ENDPOINT" >> .env
             - yarn run build
       artifacts:
-        baseDirectory: .next
+        baseDirectory: src/app/.next
         files:
           - '**/*'
       cache:
