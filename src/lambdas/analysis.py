@@ -42,12 +42,11 @@ def analysis_handler(event, context):
     post_sentiment_counts, post_positive, post_negative, post_neutral, post_mixed, post_tweet_scores = _process_tweets(comprehend, post_tweets)
 
     # Grab random sample tweets and corresponding scores
-    NUM_OF_SAMPLES = 5
-    pre_samples = [] if not pre_tweets else _get_samples(pre_tweet_scores, NUM_OF_SAMPLES)
+    DEFAULT_SAMPLES = 5
 
-    # If the person hasn't died then don't collect samples
-    post_samples = [] if not post_tweets else _get_samples(post_tweet_scores, NUM_OF_SAMPLES)
-        
+    pre_samples = [] if not pre_tweets else _get_samples(pre_tweet_scores, min(len(pre_tweet_scores), DEFAULT_SAMPLES))
+
+    post_samples = [] if not post_tweets else _get_samples(post_tweet_scores, min(len(post_tweet_scores), DEFAULT_SAMPLES))
 
     # Store both pre and post in the same dynamodb row
     # Aggregated scores are string because DynamoDB does not support float.
