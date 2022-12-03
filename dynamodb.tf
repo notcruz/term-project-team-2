@@ -17,11 +17,11 @@ resource "aws_dynamodb_table" "cache_table" {
 }
 
 resource "aws_dynamodb_table" "raw_data_table" {
-  name = "RawDataTable"
-  billing_mode = "PROVISIONED"
-  read_capacity = 50
+  name           = "RawDataTable"
+  billing_mode   = "PROVISIONED"
+  read_capacity  = 50
   write_capacity = 50
-  hash_key = "name"
+  hash_key       = "name"
 
   attribute {
     name = "name"
@@ -29,7 +29,7 @@ resource "aws_dynamodb_table" "raw_data_table" {
   }
 
   tags = {
-    Name = "raw_data_table"
+    Name        = "raw_data_table"
     Environment = "production"
   }
 
