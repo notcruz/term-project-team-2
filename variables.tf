@@ -22,17 +22,11 @@ variable "aws_token" {
   default     = ""
 }
 
-/* Attach Github Access Token Here - https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/amplify_app#repository-with-tokens */
-/* Manually Run Build - https://us-east-1.console.aws.amazon.com/amplify/home */
-variable "git_access_token" {
-  description = "Github Access Token"
-  default     = ""
-}
-
 variable "git_repo" {
   description = "Github Repo"
   default     = "https://github.com/swen-514-614-fall2022/term-project-team-2"
 }
+
 variable "lab_role_arn" {
   description = "ARN for your aws academy LabRole"
   type        = string

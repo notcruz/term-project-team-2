@@ -1,17 +1,25 @@
 resource "aws_instance" "front-end" {
-  ami                    = "ami-032f3250cf84bd208"
-  instance_type          = "t2.micro"
-  subnet_id              = aws_subnet.public_subnet_a.id
-  vpc_security_group_ids = ["${aws_security_group.instance_security_group.id}"]
-  user_data              = <<EOF
-    git clone "${var.git_repo}"
-    cd term-project-team-2/src/app/
-    echo NEXT_PUBLIC_ENDPOINT="${aws_apigatewayv2_stage.api_gw.invoke_url}" >> .env
-    npm i next
-    npm run build
-    pm2 start npm --name "next" -- start
-    systemctl start nginx
+  ami                         = "ami-032f3250cf84bd208"
+  instance_type               = "t2.micro"
+  subnet_id                   = aws_subnet.public_subnet_a.id
+  vpc_security_group_ids      = ["${aws_security_group.instance_security_group.id}"]
+  user_data                   = <<-EOF
+    #!/bin/bash
+    cd root/;
+    git clone "${var.git_repo}";
+    cd term-project-team-2/src/app/;
+    echo NEXT_PUBLIC_ENDPOINT="${aws_apigatewayv2_stage.api_gw.invoke_url}" >> .env;
+    source ~/.nvm/nvm.sh;
+    npm i next;
+    npm run build;
+    pm2 start npm --name "next" -- start;
+    systemctl start nginx;
   EOF
+  user_data_replace_on_change = true
+
+  depends_on = [
+    aws_apigatewayv2_api.api_gw
+  ]
 }
 
 resource "aws_vpc" "vpc" {
@@ -24,7 +32,7 @@ resource "aws_vpc" "vpc" {
 }
 
 resource "aws_eip" "ip" {
-  instance = "${aws_instance.front-end.id}"
+  instance = aws_instance.front-end.id
   vpc      = true
 }
 
@@ -81,5 +89,5 @@ resource "aws_security_group" "instance_security_group" {
 }
 
 output "url" {
-  value = "http://${aws_instance.front-end.public_ip}"
+  value = "Wait a few minutes for EC2 to spin up: http://${aws_eip.ip.public_ip}"
 }
